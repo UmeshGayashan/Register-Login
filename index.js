@@ -1,6 +1,5 @@
 require("dotenv").config();
-// const upload = require("./routes/patientsRoutes");
-const Grid = require("gridfs-stream");
+
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const connection = require("./database/connection");
@@ -11,11 +10,13 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(
     express.urlencoded({
-      extended: false,
+        extended: false,
     })
 );
 
 app.use(fileUpload());
+
+app.use('/uploads/products', express.static('public/products'))
 
 // let gfs;
 connection();
