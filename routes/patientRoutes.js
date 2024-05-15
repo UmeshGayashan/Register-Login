@@ -3,14 +3,31 @@ const express = require("express");
 const router = express.Router();
 const patientSchema = require("../schema/patientSchema");
 const { generateToken } = require("../extra/jwt");
+const createHttpError = require("http-errors");
 
 // Registration Route
-router.post("/register",upload.single("file"), async (req, res) => {
+router.post("/register", async (req, res) => {
     try {
       const { firstName, lastName, mobileNumber, email, username, password } = req.body;
+      
+      const { image } = req.files;
+        if(req.file==undefined){
+        return res.status(400).send("Please upload a image file!");
+        }
+        if (!image.mimetype.startsWith('image')) {
+            throw createHttpError(400, 'Only images are allowed');
+        }
+        let filepath = __dirname + '../images/' + image.name
+        image.mv(filepath);
+
+        let filepathtoUplaod = '/images/' + image.name
+
+        if (!firstName || !lastName || !mobileNumber || !email || !username || !password) {
+            throw createHttpError(400, 'Please provide all the required fields');
+        }
 
       // The URL/path for the uploaded image
-      const pictureUrl = req.file ? `http://localhost:4000/file/${req.file.filename}` : null;
+      // const pictureUrl = req.file ? `http://localhost:4000/public/file/${req.file.filename}` : null;
       console.log("Hello");
   
       // Create a new user document
@@ -19,9 +36,10 @@ router.post("/register",upload.single("file"), async (req, res) => {
         lastName,
         mobileNumber,
         email,
-        picture: pictureUrl,
+        picture: filepathtoUplaod,
         username,
         password,
+        
       });
       console.log(newUser);
   

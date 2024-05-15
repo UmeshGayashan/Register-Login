@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const connection = require("./database/connection");
 const express = require("express");
+const fileUpload = require('express-fileupload');
 const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
@@ -13,6 +14,8 @@ app.use(
       extended: false,
     })
 );
+
+app.use(fileUpload());
 
 // let gfs;
 connection();
